@@ -1,0 +1,93 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "03ad5df6-ec71-4b24-b641-0808fcb3d24b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import streamlit as st\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from sklearn.linear_model import LogisticRegression\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "\n",
+    "# تحميل البيانات\n",
+    "@st.cache_data\n",
+    "def load_data():\n",
+    "    return pd.read_csv(\"diabetes.csv\")\n",
+    "\n",
+    "# تدريب النموذج\n",
+    "@st.cache_resource\n",
+    "def train_model(data):\n",
+    "    X = data.drop(\"Outcome\", axis=1)\n",
+    "    y = data[\"Outcome\"]\n",
+    "    \n",
+    "    scaler = StandardScaler()\n",
+    "    X_scaled = scaler.fit_transform(X)\n",
+    "    \n",
+    "    X_train, X_test, y_train, y_test = train_test_split(\n",
+    "        X_scaled, y, test_size=0.2, random_state=42\n",
+    "    )\n",
+    "    \n",
+    "    model = LogisticRegression()\n",
+    "    model.fit(X_train, y_train)\n",
+    "    \n",
+    "    return model, scaler\n",
+    "\n",
+    "def main():\n",
+    "    st.title(\"🩺 تطبيق التنبؤ بمرض السكري باستخدام Logistic Regression\")\n",
+    "\n",
+    "    st.write(\"أدخل البيانات التالية:\")\n",
+    "\n",
+    "    pregnancies = st.number_input(\"عدد مرات الحمل\", 0, 20, 1)\n",
+    "    glucose = st.number_input(\"مستوى الجلوكوز\", 0, 200, 100)\n",
+    "    blood_pressure = st.number_input(\"ضغط الدم\", 0, 150, 70)\n",
+    "    skin_thickness = st.number_input(\"سمك الجلد\", 0, 100, 20)\n",
+    "    insulin = st.number_input(\"مستوى الأنسولين\", 0, 900, 80)\n",
+    "    bmi = st.number_input(\"مؤشر كتلة الجسم\", 0.0, 70.0, 25.0)\n",
+    "    dpf = st.number_input(\"عامل الوراثة (DPF)\", 0.0, 3.0, 0.5)\n",
+    "    age = st.number_input(\"العمر\", 1, 120, 30)\n",
+    "\n",
+    "    data = load_data()\n",
+    "    model, scaler = train_model(data)\n",
+    "\n",
+    "    if st.button(\"توقع\"):\n",
+    "        input_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness,\n",
+    "                                insulin, bmi, dpf, age]])\n",
+    "        input_scaled = scaler.transform(input_data)\n",
+    "        prediction = model.predict(input_scaled)\n",
+    "\n",
+    "        if prediction[0] == 1:\n",
+    "            st.error(\"⚠ من المرجح أنك مصاب بمرض السكري.\")\n",
+    "        else:\n",
+    "            st.success(\"✅ من غير المرجح أنك مصاب بمرض السكري.\")\n",
+    "\n",
+    "if _name_ == \"_main_\":\n",
+    "    main()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
