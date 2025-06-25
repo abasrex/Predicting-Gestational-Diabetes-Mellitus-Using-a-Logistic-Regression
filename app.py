@@ -24,7 +24,7 @@ def train_model(data):
     return model, scaler
 
 def main():
-    st.title("🩺 تطبيق التنبؤ بمرض السكري باستخدام Logistic Regression")
+    st.title("🩺 تطبيق التنبؤ بمرض سكر الحمل باستخدام Logistic Regression")
 
     st.write("أدخل البيانات التالية:")
     pregnancies = st.number_input("عدد مرات الحمل", 0, 20, 1)
