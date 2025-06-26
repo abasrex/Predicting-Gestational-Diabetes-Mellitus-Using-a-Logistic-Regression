@@ -45,9 +45,9 @@ def main():
         prediction = model.predict(input_scaled)
 
         if prediction[0] == 1:
-            st.error("⚠ من المرجح أنك مصاب بمرض السكري.")
+            st.error("⚠  مصاب بمرض السكري.")
         else:
-            st.success("✅ من غير المرجح أنك مصاب بمرض السكري.")
+            st.success("✅  غير  مصاب بمرض السكري.")
 
 if __name__ == "__main__":
     main()
